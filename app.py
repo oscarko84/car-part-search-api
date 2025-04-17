@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from search_engine import SearchEngine
 
@@ -18,4 +19,5 @@ def search():
     return jsonify(result)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Railway가 제공하는 포트
+    app.run(host="0.0.0.0", port=port)
