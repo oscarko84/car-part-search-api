@@ -35,6 +35,8 @@ class SearchEngine:
             }
 ##
         top = matched.iloc[0]
+        print(f"top {top}")
+        
         return {
                 "version": "2.0",
                 "template": {
