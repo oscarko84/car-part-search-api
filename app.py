@@ -15,6 +15,7 @@ def search():
     try:
         data = request.get_json()
 
+        print(data)
         # 스킬 서버 요청 형식 처리
         if "userRequest" in data and "utterance" in data["userRequest"]:
             query = data["userRequest"]["utterance"].strip()
