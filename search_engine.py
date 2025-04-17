@@ -47,7 +47,7 @@ class SearchEngine:
                             {
                             "label": "링크 열기",
                             "action": "webLink",
-                            "webLinkUrl": "https://..."
+                            "webLinkUrl": top
                             }
                         ]
                         }
