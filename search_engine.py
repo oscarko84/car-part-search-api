@@ -36,7 +36,22 @@ class SearchEngine:
 ##
         top = matched.iloc[0]
         return {
-            "type": "키워드",
-            "message": f"{top['제조사']} {top['모델']}의 {top['부품명']} 링크입니다.",
-            "url": top["URL"]
+                "version": "2.0",
+                "template": {
+                    "outputs": [
+                    {
+                        "basicCard": {
+                        "title": "제조사 모델명",
+                        "description": "부품명 링크입니다.",
+                        "buttons": [
+                            {
+                            "label": "링크 열기",
+                            "action": "webLink",
+                            "webLinkUrl": "https://..."
+                            }
+                        ]
+                        }
+                    }
+                    ]
+                }
         }
