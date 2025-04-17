@@ -17,14 +17,15 @@ def search():
 
         print(f"data: {data}")
         # 스킬 서버 요청 형식 처리
+        # 요청에서 query 추출
         if "userRequest" in data and "utterance" in data["userRequest"]:
             query = data["userRequest"]["utterance"].strip()
-        elif "query" in data:
-            query = data["query"].strip()
+        elif "action" in data and "params" in data["action"] and "query" in data["action"]["params"]:
+            query = data["action"]["params"]["query"].strip()
         else:
             return jsonify({
                 "error": "Bad Request",
-                "message": "Missing 'query' or 'userRequest.utterance' field in request body."
+                "message": "Missing 'query' in 'userRequest.utterance' or 'action.params.query'."
             }), 400
 
         query = data["query"].strip()
