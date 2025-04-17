@@ -15,9 +15,12 @@ def index():
 def search():
     try:
         data = request.get_json()
+        print(f"[INFO] 요청 수신: {data}")
 
-        query = data.get("action", {}).get("params", {}).get("query", "").strip()
-        if not query:
+        if "action" in data and "params" in data["action"] and "query" in data["action"]["params"]:
+            query = data["action"]["params"]["query"].strip()
+        else:
+            print("[WARN] 'query' 파라미터 없음")
             return jsonify({
                 "error": "Bad Request",
                 "message": "Missing 'query' in 'action.params.query'."
@@ -27,6 +30,7 @@ def search():
         return jsonify(result)
 
     except Exception as e:
+        print(f"[ERROR] 요청 처리 실패: {e}")
         return jsonify({
             "error": "Server error",
             "message": str(e)
