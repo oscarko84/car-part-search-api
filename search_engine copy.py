@@ -1,23 +1,4 @@
-import pandas as pd
-import os
-
-class SearchEngine:
-    def __init__(self):
-        self.df = self.load_data()
-
-    def load_data(self):
-        # 현재 파일 위치 기준으로 CSV 경로 설정
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(base_dir, "data", "parts.csv")
-
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"CSV 파일을 찾을 수 없습니다: {file_path}")
-
-        # CSV 읽기
-        df = pd.read_csv(file_path, encoding="utf-8")
-        return df
-
-    def match(self, user_query):
+def match(self, user_query):
     search_columns = ["제조사", "시리즈", "모델", "바디연식", "부품명"]
 
     condition = False
