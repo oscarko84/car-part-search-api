@@ -13,10 +13,15 @@ def search():
     try:
         data = request.get_json()
 
-        if not data or "query" not in data:
+        # 스킬 서버 요청 형식 처리
+        if "userRequest" in data and "utterance" in data["userRequest"]:
+            query = data["userRequest"]["utterance"].strip()
+        elif "query" in data:
+            query = data["query"].strip()
+        else:
             return jsonify({
                 "error": "Bad Request",
-                "message": "Missing 'query' field in request body."
+                "message": "Missing 'query' or 'userRequest.utterance' field in request body."
             }), 400
 
         query = data["query"].strip()
