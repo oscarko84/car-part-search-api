@@ -15,9 +15,8 @@ class SearchEngine:
         df = pd.read_csv(file_path, encoding="utf-8")
         return df
 
-    def match(self, request_json):
-        user_query = request_json.get("userRequest", {}).get("utterance", "")
-
+    def match(self, user_query):
+        # 여러 컬럼에서 검색
         conditions = (
             self.df["제조사"].str.contains(user_query, case=False, na=False) |
             self.df["시리즈"].str.contains(user_query, case=False, na=False) |
@@ -43,17 +42,25 @@ class SearchEngine:
             }
 
         top = matched.iloc[0]
-        result_text = f"{top['제조사']} {top['모델']}의 {top['부품명']} 링크입니다.\n{top['URL']}"
+        response_text = f"{top['제조사']} {top['모델']}의 {top['부품명']} 링크입니다.{top['URL']}"
 
+        # return {
+        #     "version": "2.0",
+        #     "template": {
+        #         "outputs": [
+        #             {
+        #                 "simpleText": {
+        #                     "text": response_text
+        #                 }
+        #             }
+        #         ]
+        #     }
+        # }
         return {
-            "version": "2.0",
-            "template": {
-                "outputs": [
-                    {
-                        "simpleText": {
-                            "text": result_text
-                        }
+            "version":"2.0",
+            "template":{
+                "outputs":[
+                    {"simpleText":{"text":"hello Im Ryan"}}
+                    ]
                     }
-                ]
-            }
         }
