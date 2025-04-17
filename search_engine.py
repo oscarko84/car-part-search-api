@@ -36,20 +36,20 @@ class SearchEngine:
 ##
         top = matched.iloc[0]
         print(f"top {top}")
-        
+
         return {
                 "version": "2.0",
                 "template": {
                     "outputs": [
                     {
                         "basicCard": {
-                        "title": "제조사 모델명",
+                        "title": f"{top['제조사']} {top['모델']}의 {top['부품명']} 링크입니다.",
                         "description": "부품명 링크입니다.",
                         "buttons": [
                             {
                             "label": "링크 열기",
                             "action": "webLink",
-                            "webLinkUrl": top
+                            "webLinkUrl": top["부품명"]
                             }
                         ]
                         }
