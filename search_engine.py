@@ -60,7 +60,7 @@ class SearchEngine:
             "version":"2.0",
             "template":{
                 "outputs":[
-                    {"simpleText":{"text":"hello I'm Ryan"}}
+                    {"simpleText":{"text":"hello Im Ryan"}}
                     ]
                     }
         }
