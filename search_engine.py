@@ -1,5 +1,7 @@
 import pandas as pd
 import os
+from flask import Flask, request, jsonify
+
 
 class SearchEngine:
     def __init__(self):
@@ -56,4 +58,4 @@ class SearchEngine:
         #         ]
         #     }
         # }
-        return {"version":"2.0","template":{"outputs":[{"simpleText":{"text":response_text}}]}}
+        return jsonify({"version":"2.0","template":{"outputs":[{"simpleText":{"text":response_text}}]}});
