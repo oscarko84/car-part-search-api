@@ -2,21 +2,20 @@ import pandas as pd
 import os
 from flask import Flask, request, jsonify
 
+app = Flask(__name__)
 
 class SearchEngine:
     def __init__(self):
         self.df = self.load_data()
-
+    
     def load_data(self):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(base_dir, "data", "parts.csv")
-
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"CSV not found at: {file_path}")
-
         df = pd.read_csv(file_path, encoding="utf-8")
         return df
-
+    
     def match(self, user_query):
         # 여러 컬럼에서 검색
         conditions = (
@@ -26,9 +25,7 @@ class SearchEngine:
             self.df["바디연식"].str.contains(user_query, case=False, na=False) |
             self.df["부품명"].str.contains(user_query, case=False, na=False)
         )
-
         matched = self.df[conditions]
-
         if matched.empty:
             return {
                 "version": "2.0",
@@ -42,23 +39,39 @@ class SearchEngine:
                     ]
                 }
             }
-
         top = matched.iloc[0]
         response_text = f"{top['제조사']} {top['모델']}의 {top['부품명']} 링크입니다.{top['URL']}"
-
-        # return {
-        #     "version": "2.0",
-        #     "template": {
-        #         "outputs": [
-        #             {
-        #                 "simpleText": {
-        #                     "text": response_text
-        #                 }
-        #             }
-        #         ]
-        #     }
-        # }
-
         data = {"version":"2.0","template":{"outputs":[{"simpleText":{"text":response_text}}]}}
-
         return data
+
+
+@app.route('/skill', methods=['POST'])
+def process_skill():
+    try:
+        # 사용자 쿼리 가져오기
+        req = request.get_json()
+        user_query = req.get('userRequest', {}).get('utterance', '')
+        
+        # 검색 엔진 생성 및 쿼리 처리
+        search_engine = SearchEngine()
+        result = search_engine.match(user_query)
+        
+        # JSON 응답 반환
+        return jsonify(result)
+    except Exception as e:
+        # 오류 처리
+        return jsonify({
+            "version": "2.0",
+            "template": {
+                "outputs": [
+                    {
+                        "simpleText": {
+                            "text": f"오류가 발생했습니다: {str(e)}"
+                        }
+                    }
+                ]
+            }
+        })
+
+if __name__ == '__main__':
+    app.run(debug=True)
