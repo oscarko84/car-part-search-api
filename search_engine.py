@@ -20,19 +20,20 @@ class SearchEngine:
         # 검색 대상 컬럼
         search_columns = ["제조사", "시리즈", "모델", "바디연식", "부품명"]
 
-        # 공백 단위로 키워드 분리
+        # 입력 키워드를 공백 기준으로 나누기
         keywords = user_query.strip().split()
 
-        # 모든 키워드가 하나 이상의 컬럼에 등장하는 행만 필터링
-        mask = pd.Series([True] * len(self.df))
-        for keyword in keywords:
-            keyword_match = pd.Series([False] * len(self.df))
-            for col in search_columns:
-                keyword_match |= self.df[col].astype(str).str.contains(keyword, case=False, na=False)
-            mask &= keyword_match
+        # 키워드가 모두 하나의 행 안의 컬럼 중 어디엔가 포함되어야 한다
+        def row_matches(row):
+            return all(
+                any(keyword.lower() in str(row[col]).lower() for col in search_columns)
+                for keyword in keywords
+            )
 
-        matched = self.df[mask]
+        # 필터링
+        matched = self.df[self.df.apply(row_matches, axis=1)]
 
+        # 결과 없음 처리
         if matched.empty:
             return {
                 "version": "2.0",
@@ -47,6 +48,7 @@ class SearchEngine:
                 }
             }
 
+        # 결과 응답
         top = matched.iloc[0]
         return {
             "version": "2.0",
