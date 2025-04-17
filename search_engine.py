@@ -1,8 +1,5 @@
 import pandas as pd
 import os
-from flask import Flask, request, jsonify
-
-app = Flask(__name__)
 
 class SearchEngine:
     def __init__(self):
@@ -43,35 +40,3 @@ class SearchEngine:
         response_text = f"{top['제조사']} {top['모델']}의 {top['부품명']} 링크입니다.{top['URL']}"
         data = {"version":"2.0","template":{"outputs":[{"simpleText":{"text":response_text}}]}}
         return data
-
-
-@app.route('/skill', methods=['POST'])
-def process_skill():
-    try:
-        # 사용자 쿼리 가져오기
-        req = request.get_json()
-        user_query = req.get('userRequest', {}).get('utterance', '')
-        
-        # 검색 엔진 생성 및 쿼리 처리
-        search_engine = SearchEngine()
-        result = search_engine.match(user_query)
-        
-        # JSON 응답 반환
-        return jsonify(result)
-    except Exception as e:
-        # 오류 처리
-        return jsonify({
-            "version": "2.0",
-            "template": {
-                "outputs": [
-                    {
-                        "simpleText": {
-                            "text": f"오류가 발생했습니다: {str(e)}"
-                        }
-                    }
-                ]
-            }
-        })
-
-if __name__ == '__main__':
-    app.run(debug=True)
