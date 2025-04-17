@@ -49,7 +49,7 @@ class SearchEngine:
                             {
                             "label": "링크 열기",
                             "action": "webLink",
-                            "webLinkUrl": top["부품명"]
+                            "webLinkUrl": top["URL"]
                             }
                         ]
                         }
