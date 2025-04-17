@@ -18,9 +18,7 @@ def search():
         print(f"data: {data}")
         # 스킬 서버 요청 형식 처리
         # 요청에서 query 추출
-        if "userRequest" in data and "utterance" in data["userRequest"]:
-            query = data["userRequest"]["utterance"].strip()
-        elif "action" in data and "params" in data["action"] and "query" in data["action"]["params"]:
+        if "action" in data and "params" in data["action"] and "query" in data["action"]["params"]:
             query = data["action"]["params"]["query"].strip()
         else:
             return jsonify({
