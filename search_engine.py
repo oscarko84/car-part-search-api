@@ -33,7 +33,7 @@ class SearchEngine:
                 "type": "miss",
                 "message": f'"{user_query}"에 대한 검색 결과가 없습니다.'
             }
-
+##
         top = matched.iloc[0]
         return {
             "type": "키워드",
