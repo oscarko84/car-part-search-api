@@ -28,8 +28,6 @@ def search():
                 "message": "Missing 'query' in 'userRequest.utterance' or 'action.params.query'."
             }), 400
 
-        query = data["query"].strip()
-
         print(f"query: {query}")
 
         result = search_engine.match(query)
