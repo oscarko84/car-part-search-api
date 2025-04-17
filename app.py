@@ -1,32 +1,33 @@
 from flask import Flask, request, jsonify
 from search_engine import SearchEngine
-import os
 
 app = Flask(__name__)
 search_engine = SearchEngine()
 
-@app.route("/", methods=["GET"])
+@app.route("/")
 def index():
     return "Car Part Search API is running."
 
 @app.route("/search", methods=["POST"])
 def search():
     try:
-        # 요청에서 JSON 추출
         data = request.get_json()
 
         if not data or "query" not in data:
-            return jsonify({"error": "Missing 'query' in request"}), 400
+            return jsonify({
+                "error": "Bad Request",
+                "message": "Missing 'query' field in request body."
+            }), 400
 
-        query = data["query"]
+        query = data["query"].strip()
         result = search_engine.match(query)
-
-        return jsonify(result), 200
+        return jsonify(result)
 
     except Exception as e:
-        # 예외 발생 시 에러 메시지 출력
-        return jsonify({"error": "Server error", "message": str(e)}), 500
+        return jsonify({
+            "error": "Server error",
+            "message": str(e)
+        }), 500
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=8080)
