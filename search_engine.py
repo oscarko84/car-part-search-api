@@ -1,37 +1,36 @@
 import pandas as pd
-import os
 
 class SearchEngine:
     def __init__(self):
-        self.df = self.load_data()
-
-    def load_data(self):
-        # 현재 파일 위치 기준으로 압축된 CSV 경로 설정
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(base_dir, "data", "parts.csv.gz")
-
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"CSV 파일을 찾을 수 없습니다: {file_path}")
-
-        # gzip 압축된 CSV 읽기
-        df = pd.read_csv(file_path, compression='gzip', encoding="utf-8")
-        return df
+        try:
+            self.df = pd.read_csv("data/parts.csv")
+            print(f"[INFO] CSV Loaded - {len(self.df)} rows")
+        except Exception as e:
+            print("[ERROR] Failed to load CSV:", e)
+            self.df = pd.DataFrame()
 
     def match(self, user_query):
-        search_columns = ["제조사", "시리즈", "모델", "바디연식", "부품명"]
+        if self.df.empty:
+            return {
+                "version": "2.0",
+                "template": {
+                    "outputs": [
+                        {
+                            "simpleText": {
+                                "text": "데이터를 불러오지 못했습니다."
+                            }
+                        }
+                    ]
+                }
+            }
 
-        # 공백 기준 키워드 분리
-        keywords = user_query.strip().split()
+        search_columns = ["제조사", "시리즈", "모델", "연식", "부품명"]
 
-        # 각 키워드가 최소한 하나의 컬럼에 존재해야 함
-        mask = pd.Series([True] * len(self.df))
-        for keyword in keywords:
-            keyword_match = pd.Series([False] * len(self.df))
-            for col in search_columns:
-                keyword_match |= self.df[col].astype(str).str.contains(keyword, case=False, na=False)
-            mask &= keyword_match
+        condition = False
+        for col in search_columns:
+            condition |= self.df[col].astype(str).str.contains(user_query, case=False, na=False)
 
-        matched = self.df[mask]
+        matched = self.df[condition]
 
         if matched.empty:
             return {
@@ -40,7 +39,7 @@ class SearchEngine:
                     "outputs": [
                         {
                             "simpleText": {
-                                "text": f'"{user_query}"에 대한 검색 결과가 없습니다.'
+                                "text": f"'{user_query}'에 대한 검색 결과가 없습니다."
                             }
                         }
                     ]
@@ -53,13 +52,18 @@ class SearchEngine:
             "template": {
                 "outputs": [
                     {
+                        "simpleText": {
+                            "text": f"{top['제조사']} {top['모델']}의 [{top['부품명']}] 링크입니다."
+                        }
+                    },
+                    {
                         "basicCard": {
-                            "title": f"{top['제조사']} {top['모델']}의 {top['부품명']} 링크입니다.",
-                            "description": top["URL"],
+                            "title": top["부품명"],
+                            "description": f"{top['제조사']} / {top['모델']}",
                             "buttons": [
                                 {
-                                    "label": "링크 열기",
                                     "action": "webLink",
+                                    "label": "링크 열기",
                                     "webLinkUrl": top["URL"]
                                 }
                             ]

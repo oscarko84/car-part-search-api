@@ -15,30 +15,18 @@ def index():
 def search():
     try:
         data = request.get_json()
-        print(f"📥 Received data: {data}")  # 디버깅 로그
 
-        if not data or "action" not in data:
-            return jsonify({
-                "error": "Bad Request",
-                "message": "Missing 'action' in request payload."
-            }), 400
-
-        action = data["action"]
-        params = action.get("params", {})
-
-        query = params.get("query", "").strip()
-
+        query = data.get("action", {}).get("params", {}).get("query", "").strip()
         if not query:
             return jsonify({
                 "error": "Bad Request",
-                "message": "Missing or empty 'query' parameter."
+                "message": "Missing 'query' in 'action.params.query'."
             }), 400
 
         result = search_engine.match(query)
         return jsonify(result)
 
     except Exception as e:
-        print(f"❌ Exception: {str(e)}")  # 서버 로그 출력
         return jsonify({
             "error": "Server error",
             "message": str(e)
