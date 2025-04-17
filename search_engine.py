@@ -61,4 +61,4 @@ class SearchEngine:
 
         data = {"version":"2.0","template":{"outputs":[{"simpleText":{"text":response_text}}]}}
 
-        return jsonify(data)
+        return data
