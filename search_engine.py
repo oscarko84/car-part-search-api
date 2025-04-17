@@ -44,7 +44,7 @@ class SearchEngine:
                     {
                         "basicCard": {
                         "title": f"{top['제조사']} {top['모델']}의 {top['부품명']} 링크입니다.",
-                        "description": "부품명 링크입니다.",
+                        "description": top['URL'],
                         "buttons": [
                             {
                             "label": "링크 열기",
