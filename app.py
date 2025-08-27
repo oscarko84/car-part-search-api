@@ -98,7 +98,7 @@ def extract_vin(data):
     return None
 
 def build_parts119_url(vin):
-    return f"https://parts119.com/goods/goods_search_vin.php?vin={urllib.parse.quote(vin.upper())}&keyword=all"
+    return f"https://m.parts119.com/goods/goods_search_vin.php?vin={urllib.parse.quote(vin.upper())}&keyword=all"
 
 def is_kakao_request(data):
     # 매우 단순한 판별: Kakao 스킬 공통 필드가 있으면 True
